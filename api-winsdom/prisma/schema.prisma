@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:@localhost:3000/winsdom"
+}
+
+model employees {
+  id            Int                     @id @default(autoincrement())
+  userId        Int
+  nama_employee String                  @db.VarChar(255)
+  alamat        String                  @db.VarChar(255)
+  no_hp         String                  @db.VarChar(255)
+  jenis_kelamin employees_jenis_kelamin
+  umur          String                  @db.VarChar(11)
+  created_at    DateTime                @default(now()) @db.Timestamp(0)
+  updated_at    DateTime                @db.DateTime(0)
+  users         users                   @relation(fields: [userId], references: [id], onUpdate: Restrict, map: "employees_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model histories {
+  id           Int          @id @default(autoincrement())
+  UserId       Int?
+  InventoryId  Int?
+  idPeminjaman Int?
+  kondisi      String?      @db.VarChar(255)
+  created_at   DateTime     @default(now()) @db.Timestamp(0)
+  updated_at   DateTime     @db.DateTime(0)
+  users        users?       @relation(fields: [UserId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "histories_ibfk_1")
+  inventories  inventories? @relation(fields: [InventoryId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "histories_ibfk_2")
+  peminjamans  peminjamans? @relation(fields: [idPeminjaman], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "histories_ibfk_3")
+
+  @@index([InventoryId], map: "InventoryId")
+  @@index([UserId], map: "UserId")
+  @@index([idPeminjaman], map: "idPeminjaman")
+}
+
+model inventories {
+  id          Int                  @id @default(autoincrement())
+  nama_barang String?              @db.VarChar(255)
+  category    inventories_category
+  deskripsi   String?              @db.Text
+  alamat      String?              @db.VarChar(255)
+  image       String?              @db.VarChar(255)
+  stok        Int
+  status      inventories_status?
+  created_at  DateTime             @default(now()) @db.Timestamp(0)
+  updated_at  DateTime             @db.DateTime(0)
+  histories   histories[]
+  peminjamans peminjamans[]
+}
+
+model peminjamans {
+  id                   Int                              @id @default(autoincrement())
+  UserId               Int?
+  nama_employee        String                           @db.VarChar(255)
+  InventoryId          Int?
+  nama_barang          String                           @db.VarChar(255)
+  tanggalPeminjaman    DateTime?                        @db.Date
+  tanggalPengembalian  DateTime?                        @db.Date
+  verifikasiPeminjaman peminjamans_verifikasiPeminjaman
+  kondisi              peminjamans_kondisi
+  catatan              String                           @db.VarChar(255)
+  inStok               Int
+  outStok              Int
+  created_at           DateTime                         @default(now()) @db.Timestamp(0)
+  updated_at           DateTime                         @db.DateTime(0)
+  histories            histories[]
+  users                users?                           @relation(fields: [UserId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_user")
+  inventories          inventories?                     @relation(fields: [InventoryId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "peminjamans_ibfk_2")
+
+  @@index([InventoryId], map: "InventoryId")
+  @@index([UserId], map: "fk_user")
+}
+
+model users {
+  id          Int           @id @default(autoincrement())
+  NIK         String?       @db.VarChar(100)
+  password    String?       @db.VarChar(255)
+  role        users_role?   @default(employee)
+  created_at  DateTime      @default(now()) @db.Timestamp(0)
+  updated_at  DateTime      @db.DateTime(0)
+  employees   employees[]
+  histories   histories[]
+  peminjamans peminjamans[]
+}
+
+enum inventories_category {
+  ruangan
+  barang
+}
+
+enum users_role {
+  admin
+  employee
+}
+
+enum employees_jenis_kelamin {
+  pria
+  wanita
+}
+
+enum inventories_status {
+  tersedia
+  disewa
+}
+
+enum peminjamans_verifikasiPeminjaman {
+  terima
+  proses
+  tolak
+}
+
+enum peminjamans_kondisi {
+  aman
+  rusak
+  hilang
+}
