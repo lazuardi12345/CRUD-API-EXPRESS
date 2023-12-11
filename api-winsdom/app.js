@@ -3,13 +3,14 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var multer = require("multer");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var mastersRouter = require("./routes/masters");
 var peminjamansRouter = require("./routes/peminjamans");
 var historiesRouter = require("./routes/histories");
-
+var imageRoutes = require("./uploads/server");
 var app = express();
 
 // view engine setup
@@ -27,7 +28,7 @@ app.use("/users", usersRouter);
 app.use("/masters", mastersRouter);
 app.use("/peminjamans", peminjamansRouter);
 app.use("/histories", historiesRouter);
-
+app.use("/server", imageRoutes);
 // catch 404 and forward to error handler
 // Middleware untuk menangani kesalahan
 app.use((req, res, next) => {

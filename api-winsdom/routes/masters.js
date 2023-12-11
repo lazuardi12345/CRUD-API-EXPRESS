@@ -1,6 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const path = require("path");
 const db = require("../config/config");
+
+// Multer Setup
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads/images"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Middleware untuk menangani kesalahan umum
 router.use((err, req, res, next) => {
@@ -60,10 +74,11 @@ router.get("/inventories/:id", (req, res) => {
 });
 
 // Create new item
-router.post("/inventories", (req, res) => {
-  const { nama_barang, category, deskripsi, alamat, image, stok, status } =
-    req.body;
-  const sql = `INSERT INTO inventories (nama, category, deskripsi, alamat, image, status) VALUES ('${nama_barang}', '${category}', '${deskripsi}', '${alamat}', '${image}', '${stok}','${status}')`;
+router.post("/inventories", upload.single("image"), (req, res) => {
+  const { nama_barang, category, deskripsi, alamat, stok, status } = req.body;
+  const image = req.file.filename; // Ambil nama file gambar yang diunggah
+
+  const sql = `INSERT INTO inventories (nama_barang, category, deskripsi, alamat, image, stok, status) VALUES ('${nama_barang}', '${category}', '${deskripsi}', '${alamat}', '${image}', '${stok}', '${status}')`;
 
   db.query(sql, (err, data) => {
     if (err) {
