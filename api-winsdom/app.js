@@ -11,6 +11,7 @@ var mastersRouter = require("./routes/masters");
 var peminjamansRouter = require("./routes/peminjamans");
 var historiesRouter = require("./routes/histories");
 var imageRoutes = require("./uploads/server");
+var authRoutes = require("./routes/auth");
 var app = express();
 
 // view engine setup
@@ -29,6 +30,7 @@ app.use("/masters", mastersRouter);
 app.use("/peminjamans", peminjamansRouter);
 app.use("/histories", historiesRouter);
 app.use("/server", imageRoutes);
+app.use("/auth", authRoutes);
 // catch 404 and forward to error handler
 // Middleware untuk menangani kesalahan
 app.use((req, res, next) => {
