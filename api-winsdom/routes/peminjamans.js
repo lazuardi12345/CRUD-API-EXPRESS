@@ -112,9 +112,7 @@ router.post("/peminjamans", (req, res) => {
 // Update item
 router.put("/peminjamans/:id", (req, res) => {
   const {
-    userId,
     nama_employee,
-    inventoryId,
     tanggal_mulai_peminjaman,
     tanggal_akhir_peminjaman,
     verifikasiPeminjaman,
@@ -124,13 +122,11 @@ router.put("/peminjamans/:id", (req, res) => {
 
   const sql = `
     UPDATE peminjamans SET 
-      userId = '${userId}',
       nama_employee = '${nama_employee}',
-      inventoryId = '${inventoryId}',
       tanggal_mulai_peminjaman = '${tanggal_mulai_peminjaman}',
       tanggal_akhir_peminjaman = '${tanggal_akhir_peminjaman}',
       verifikasiPeminjaman = '${verifikasiPeminjaman}',
-      verifikasiPengembalian = '${verifikasiPengembalian}',
+      verifikasiPengembalian = '${verifikasiPengembalian}'
     WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {
@@ -181,6 +177,111 @@ router.delete("/peminjamans/:id", (req, res) => {
         res.send({
           status: true,
           message: "Delete Success",
+          data: data,
+        });
+      }
+    }
+  });
+});
+
+// Read peminjamans join inventories
+router.get("/peminjamans-join-inventories/", (req, res) => {
+  const sql = `SELECT inventories.nama_barang, peminjamans.*
+              FROM peminjamans
+              INNER JOIN inventories ON peminjamans.inventoryId = inventories.id;`;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: `Error fetching data, ${err}`,
+        data: [],
+      });
+    } else {
+      if (data.length === 0) {
+        res.status(404).send({
+          status: false,
+          message: "Item not found",
+          data: [],
+        });
+      } else {
+        res.send({
+          status: true,
+          message: "GET SUCCESS",
+          data: data,
+        });
+      }
+    }
+  });
+});
+
+// Update "verifikasiPeminjaman"
+router.put("/verifikasi-peminjaman/:id", (req, res) => {
+  const {
+    verifikasiPeminjaman
+  } = req.body;
+  const id = req.params.id;
+
+  const sql = `
+    UPDATE peminjamans SET 
+      verifikasiPeminjaman = '${verifikasiPeminjaman}'
+    WHERE id = ${id}`;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: `Error fetching data, ${err}`,
+        data: [],
+      });
+    } else {
+      if (data.affectedRows === 0) {
+        res.status(404).send({
+          status: false,
+          message: "Item not found",
+          data: [],
+        });
+      } else {
+        res.send({
+          status: true,
+          message: "Update Success",
+          data: data,
+        });
+      }
+    }
+  });
+});
+
+// Update "verifikasiPengembalian"
+router.put("/verifikasi-pengembalian/:id", (req, res) => {
+  const {
+    verifikasiPengembalian
+  } = req.body;
+  const id = req.params.id;
+
+  const sql = `
+    UPDATE peminjamans SET 
+      verifikasiPengembalian = '${verifikasiPengembalian}'
+    WHERE id = ${id}`;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: `Error fetching data, ${err}`,
+        data: [],
+      });
+    } else {
+      if (data.affectedRows === 0) {
+        res.status(404).send({
+          status: false,
+          message: "Item not found",
+          data: [],
+        });
+      } else {
+        res.send({
+          status: true,
+          message: "Update Success",
           data: data,
         });
       }

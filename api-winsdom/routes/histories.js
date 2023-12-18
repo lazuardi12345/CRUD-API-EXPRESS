@@ -62,14 +62,12 @@ router.get("/histories/:id", (req, res) => {
 // Create new item
 router.post("/histories", (req, res) => {
   const {
-    userId,
-    inventoryId,
     idPeminjaman,
     tanggalPengembalian,
     kondisi,
     catatan,
   } = req.body;
-  const sql = `INSERT INTO histories (userId, inventoryId, idPeminjaman, tanggalPengembalian,  kondisi, catatan) VALUES ('${userId}', '${inventoryId}', '${idPeminjaman}', '${tanggalPengembalian}', '${kondisi}', '${catatan}')`;
+  const sql = `INSERT INTO histories (idPeminjaman, tanggalPengembalian,  kondisi, catatan) VALUES ('${idPeminjaman}', '${tanggalPengembalian}', '${kondisi}', '${catatan}')`;
 
   db.query(sql, (err, data) => {
     if (err) {
@@ -91,15 +89,13 @@ router.post("/histories", (req, res) => {
 // Update item
 router.put("/histories/:id", (req, res) => {
   const {
-    userId,
-    inventoryId,
     idPeminjaman,
     tanggalPengembalian,
     kondisi,
     catatan,
   } = req.body;
   const id = req.params.id;
-  const sql = `UPDATE histories SET userId = '${userId}', inventoryId = '${inventoryId}', idPeminjaman = '${idPeminjaman}', tanggalPengembalian = '${tanggalPengembalian}', kondisi = '${kondisi}' catatan = '${catatan}' WHERE id = ${id}`;
+  const sql = `UPDATE histories SET idPeminjaman = '${idPeminjaman}', tanggalPengembalian = '${tanggalPengembalian}', kondisi = '${kondisi}' catatan = '${catatan}' WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {
     if (err) {
@@ -156,4 +152,31 @@ router.delete("/histories/:id", (req, res) => {
   });
 });
 
+// Read all items histories join peminjamans
+router.get("/histories-join-peminjamans", (req, res) => {
+  const sql = `SELECT histories.id, peminjamans.id as idPeminjaman, employees.userId, employees.nama_employee, inventories.nama_barang, 
+  peminjamans.tanggal_mulai_peminjaman, peminjamans.tanggal_akhir_peminjaman, 
+  histories.tanggalPengembalian, histories.kondisi, histories.catatan
+  FROM peminjamans
+  JOIN employees ON peminjamans.userId = employees.userId
+  JOIN inventories ON peminjamans.inventoryId = inventories.id
+  JOIN histories ON peminjamans.id = histories.idPeminjaman`;
+  
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: "Error fetching data",
+        data: [],
+      });
+    } else {
+      res.send({
+        status: true,
+        message: "GET SUCCESS",
+        data: data,
+      });
+    }
+  });
+});
 module.exports = router;

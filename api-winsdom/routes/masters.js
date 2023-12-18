@@ -98,11 +98,12 @@ router.post("/inventories", upload.single("image"), (req, res) => {
 });
 
 // Update item
-router.put("/inventories/:id", (req, res) => {
-  const { nama_barang, category, deskripsi, alamat, image, stok, status } =
-    req.body;
+router.put("/inventories/:id", upload.single("image"), (req, res) => {
+  const { nama_barang, category, deskripsi, alamat, stok, status } = req.body;
   const id = req.params.id;
-  const sql = `UPDATE inventories SET nama_barang = '${nama_barang}', category = '${category}', deskripsi = '${deskripsi}', alamat = '${alamat}', image = '${image}', stok = '${stok}', status = '${status}' WHERE id = ${id}`;
+  const image = req.file ? req.file.filename : null;
+
+  const sql = `UPDATE inventories SET nama_barang = '${nama_barang}', category = '${category}', deskripsi = '${deskripsi}', alamat = '${alamat}', image = ${image ? `'${image}'` : 'image'}, stok = '${stok}', status = '${status}' WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {
     if (err) {

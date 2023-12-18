@@ -31,7 +31,7 @@ router.get("/employees", (req, res) => {
 
 //Read employees join users
 router.get("/employees-join-users", (req, res) => {
-  const sql = `SELECT users.NIK, users.role, employees.id, employees.nama_employee, employees.alamat, 
+  const sql = `SELECT users.NIK, users.role, employees.userId, employees.id, employees.nama_employee, employees.alamat, 
   employees.no_hp, employees.jenis_kelamin, employees.umur
   FROM employees
   INNER JOIN users ON employees.userId = users.id;`;
@@ -117,7 +117,6 @@ router.get("/employees-join-users/:userId", (req, res) => {
 });
 
 // Create new employee
-
 router.post("/employees", (req, res) => {
   const { userId, nama_employee, alamat, no_hp, jenis_kelamin, umur } =
     req.body;
