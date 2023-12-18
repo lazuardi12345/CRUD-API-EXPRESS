@@ -61,8 +61,15 @@ router.get("/histories/:id", (req, res) => {
 
 // Create new item
 router.post("/histories", (req, res) => {
-  const { userId, inventoryId, idPeminjaman, kondisi } = req.body;
-  const sql = `INSERT INTO histories (userId, inventoryId, idPeminjaman, kondisi) VALUES ('${userId}', '${inventoryId}', '${idPeminjaman}', '${kondisi}')`;
+  const {
+    userId,
+    inventoryId,
+    idPeminjaman,
+    tanggalPengembalian,
+    kondisi,
+    catatan,
+  } = req.body;
+  const sql = `INSERT INTO histories (userId, inventoryId, idPeminjaman, tanggalPengembalian,  kondisi, catatan) VALUES ('${userId}', '${inventoryId}', '${idPeminjaman}', '${tanggalPengembalian}', '${kondisi}', '${catatan}')`;
 
   db.query(sql, (err, data) => {
     if (err) {
@@ -83,9 +90,16 @@ router.post("/histories", (req, res) => {
 
 // Update item
 router.put("/histories/:id", (req, res) => {
-  const { userId, inventoryId, idPeminjaman, kondisi } = req.body;
+  const {
+    userId,
+    inventoryId,
+    idPeminjaman,
+    tanggalPengembalian,
+    kondisi,
+    catatan,
+  } = req.body;
   const id = req.params.id;
-  const sql = `UPDATE histories SET userId = '${userId}', inventoryId = '${inventoryId}', idPeminjaman = '${idPeminjaman}', kondisi = '${kondisi}' WHERE id = ${id}`;
+  const sql = `UPDATE histories SET userId = '${userId}', inventoryId = '${inventoryId}', idPeminjaman = '${idPeminjaman}', tanggalPengembalian = '${tanggalPengembalian}', kondisi = '${kondisi}' catatan = '${catatan}' WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {
     if (err) {

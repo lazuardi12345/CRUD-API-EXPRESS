@@ -8,22 +8,41 @@ const db = require("../config/config");
 router.post("/register", async (req, res) => {
   try {
     const { NIK, password, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const sql = `INSERT INTO users (NIK, password, role) VALUES ('${NIK}', '${hashedPassword}', '${role}')`;
-
-    db.query(sql, (err, data) => {
-      if (err) {
-        res.status(500).send({
+    // Check if NIK is already registered
+    const checkDuplicateNIKQuery = `SELECT * FROM users WHERE NIK = '${NIK}'`;
+    db.query(checkDuplicateNIKQuery, async (checkErr, checkResult) => {
+      if (checkErr) {
+        return res.status(500).send({
           status: false,
-          message: "Error creating user",
+          message: "Error checking duplicate NIK",
+          data: [],
+        });
+      }
+      if (checkResult.length > 0) {
+        // NIK is already registered
+        return res.status(400).send({
+          status: false,
+          message: "NIK is already registered",
           data: [],
         });
       } else {
-        res.send({
-          status: true,
-          message: "User registered successfully",
-          data: data,
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const insertUserQuery = `INSERT INTO users (NIK, password, role) VALUES ('${NIK}', 
+  '${hashedPassword}', '${role}')`;
+        db.query(insertUserQuery, (err, data) => {
+          if (err) {
+            return res.status(500).send({
+              status: false,
+              message: "Error creating user",
+              data: [],
+            });
+          } else {
+            return res.send({
+              status: true,
+              message: "User registered successfully",
+              data: data,
+            });
+          }
         });
       }
     });

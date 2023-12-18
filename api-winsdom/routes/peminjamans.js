@@ -65,14 +65,10 @@ router.post("/peminjamans", (req, res) => {
     userId,
     nama_employee,
     inventoryId,
-    nama_barang,
-    tanggalPeminjaman,
-    tanggalPengembalian,
+    tanggal_mulai_peminjaman,
+    tanggal_akhir_peminjaman,
     verifikasiPeminjaman,
-    kondisi,
-    catatan,
-    inStok,
-    outStok,
+    verifikasiPengembalian,
   } = req.body;
 
   const sql = `
@@ -81,29 +77,23 @@ router.post("/peminjamans", (req, res) => {
       nama_employee,
       inventoryId,
       nama_barang,
-      tanggalPeminjaman,
-      tanggalPengembalian,
+      tanggal_mulai_peminjaman,
+      tanggal_akhir_peminjaman,
       verifikasiPeminjaman,
-      kondisi,
-      catatan,
-      inStok,
-      outStok
+      verifikasiPengembalian
     ) VALUES (
       '${userId}',
       '${nama_employee}',
       '${inventoryId}',
-      '${nama_barang}',
-      '${tanggalPeminjaman}',
-      '${tanggalPengembalian}',
+      '${tanggal_mulai_peminjaman}',
+      '${tanggal_akhir_peminjaman}',
       '${verifikasiPeminjaman}',
-      '${kondisi}',
-      '${catatan}',
-      '${inStok}',
-      '${outStok}'
+      '${verifikasiPengembalian}'
     )`;
 
   db.query(sql, (err, data) => {
     if (err) {
+      console.error(err);
       res.status(500).send({
         status: false,
         message: "Error creating data",
@@ -125,14 +115,10 @@ router.put("/peminjamans/:id", (req, res) => {
     userId,
     nama_employee,
     inventoryId,
-    nama_barang,
-    tanggalPeminjaman,
-    tanggalPengembalian,
+    tanggal_mulai_peminjaman,
+    tanggal_akhir_peminjaman,
     verifikasiPeminjaman,
-    kondisi,
-    catatan,
-    inStok,
-    outStok,
+    verifikasiPengembalian,
   } = req.body;
   const id = req.params.id;
 
@@ -141,14 +127,10 @@ router.put("/peminjamans/:id", (req, res) => {
       userId = '${userId}',
       nama_employee = '${nama_employee}',
       inventoryId = '${inventoryId}',
-      nama_barang = '${nama_barang}',
-      tanggalPeminjaman = '${tanggalPeminjaman}',
-      tanggalPengembalian = '${tanggalPengembalian}',
+      tanggal_mulai_peminjaman = '${tanggal_mulai_peminjaman}',
+      tanggal_akhir_peminjaman = '${tanggal_akhir_peminjaman}',
       verifikasiPeminjaman = '${verifikasiPeminjaman}',
-      kondisi = '${kondisi}',
-      catatan = '${catatan}',
-      inStok = '${inStok}',
-      outStok = '${outStok}'
+      verifikasiPengembalian = '${verifikasiPengembalian}',
     WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {

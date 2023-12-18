@@ -59,8 +59,17 @@ router.get("/inventories/:id", async (req, res) => {
 
 // Create new item
 router.post("/inventories", async (req, res) => {
-  const { nama_barang, category, deskripsi, alamat, image, stok, status } =
-    req.body;
+  const {
+    nama_barang,
+    category,
+    deskripsi,
+    alamat,
+    image,
+    stok,
+    outStok,
+    inStok,
+    status,
+  } = req.body;
   try {
     const newInventory = await prisma.inventory.create({
       data: {
@@ -70,6 +79,8 @@ router.post("/inventories", async (req, res) => {
         alamat,
         image,
         stok,
+        outStok,
+        inStok,
         status,
       },
     });
@@ -91,8 +102,17 @@ router.post("/inventories", async (req, res) => {
 // Update item
 router.put("/inventories/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const { nama_barang, category, deskripsi, alamat, image, stok, status } =
-    req.body;
+  const {
+    nama_barang,
+    category,
+    deskripsi,
+    alamat,
+    image,
+    stok,
+    outStok,
+    inStok,
+    status,
+  } = req.body;
 
   try {
     const updatedInventory = await prisma.inventory.update({
@@ -104,6 +124,8 @@ router.put("/inventories/:id", async (req, res) => {
         alamat,
         image,
         stok,
+        outStok,
+        inStok,
         status,
       },
     });

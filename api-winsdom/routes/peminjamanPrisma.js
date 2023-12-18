@@ -63,14 +63,10 @@ router.post("/peminjamans", async (req, res) => {
     userId,
     nama_employee,
     inventoryId,
-    nama_barang,
-    tanggalPeminjaman,
-    tanggalPengembalian,
+    tanggal_mulai_peminjaman,
+    tanggal_akhir_peminjaman,
     verifikasiPeminjaman,
-    kondisi,
-    catatan,
-    inStok,
-    outStok,
+    verifikasiPengembalian,
   } = req.body;
 
   try {
@@ -79,14 +75,10 @@ router.post("/peminjamans", async (req, res) => {
         userId,
         nama_employee,
         inventoryId,
-        nama_barang,
-        tanggalPeminjaman,
-        tanggalPengembalian,
+        tanggal_mulai_peminjaman,
+        tanggal_akhir_peminjaman,
         verifikasiPeminjaman,
-        kondisi,
-        catatan,
-        inStok,
-        outStok,
+        verifikasiPengembalian,
       },
     });
 
@@ -111,14 +103,10 @@ router.put("/peminjamans/:id", async (req, res) => {
     userId,
     nama_employee,
     inventoryId,
-    nama_barang,
-    tanggalPeminjaman,
-    tanggalPengembalian,
+    tanggal_mulai_peminjaman,
+    tanggal_akhir_peminjaman,
     verifikasiPeminjaman,
-    kondisi,
-    catatan,
-    inStok,
-    outStok,
+    verifikasiPengembalian,
   } = req.body;
 
   try {
@@ -128,14 +116,10 @@ router.put("/peminjamans/:id", async (req, res) => {
         userId,
         nama_employee,
         inventoryId,
-        nama_barang,
-        tanggalPeminjaman,
-        tanggalPengembalian,
+        tanggal_mulai_peminjaman,
+        tanggal_akhir_peminjaman,
         verifikasiPeminjaman,
-        kondisi,
-        catatan,
-        inStok,
-        outStok,
+        verifikasiPengembalian,
       },
     });
 
