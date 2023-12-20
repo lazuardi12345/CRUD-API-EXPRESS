@@ -7,7 +7,7 @@ const db = require("../config/config");
 // Multer Setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../uploads/images"));
+    cb(null, path.join(__dirname, "../public/uploads/images"));
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
@@ -78,7 +78,7 @@ router.post("/inventories", upload.single("image"), (req, res) => {
   const { nama_barang, category, deskripsi, alamat, stok, status } = req.body;
   const image = req.file.filename; // Ambil nama file gambar yang diunggah
 
-  const sql = `INSERT INTO inventories (nama_barang, category, deskripsi, alamat, image, stok, status) VALUES ('${nama_barang}', '${category}', '${deskripsi}', '${alamat}', '${image}', '${stok}', '${status}')`;
+  const sql = `INSERT INTO inventories (nama_barang, category, deskripsi, alamat, image, stok, outStok, inStok, status) VALUES ('${nama_barang}', '${category}', '${deskripsi}', '${alamat}', '${image}', '${stok}', 0, '${stok}', '${status}')`;
 
   db.query(sql, (err, data) => {
     if (err) {
@@ -99,11 +99,11 @@ router.post("/inventories", upload.single("image"), (req, res) => {
 
 // Update item
 router.put("/inventories/:id", upload.single("image"), (req, res) => {
-  const { nama_barang, category, deskripsi, alamat, stok, status } = req.body;
+  const { nama_barang, category, deskripsi, alamat, stok,outStok, inStok, status } = req.body;
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
 
-  const sql = `UPDATE inventories SET nama_barang = '${nama_barang}', category = '${category}', deskripsi = '${deskripsi}', alamat = '${alamat}', image = ${image ? `'${image}'` : 'image'}, stok = '${stok}', status = '${status}' WHERE id = ${id}`;
+  const sql = `UPDATE inventories SET nama_barang = '${nama_barang}', category = '${category}', deskripsi = '${deskripsi}', alamat = '${alamat}', image = ${image ? `'${image}'` : 'image'}, stok = '${stok}', outStok = '${outStok}', inStok = '${inStok}', status = '${status}' WHERE id = ${id}`;
 
   db.query(sql, (err, data) => {
     if (err) {
