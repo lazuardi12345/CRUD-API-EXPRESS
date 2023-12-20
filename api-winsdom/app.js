@@ -14,6 +14,11 @@ var imageRoutes = require("./uploads/server");
 var authRoutes = require("./routes/auth");
 var app = express();
 
+var cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:5173',
+}));
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
