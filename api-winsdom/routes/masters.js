@@ -160,5 +160,51 @@ router.delete("/inventories/:id", (req, res) => {
   });
 });
 
-//update stok
+//increase outStok
+router.put('/increaseOutStok/:id', (req, res) => {
+  const inventoryId = req.params.id;
+
+  // Query untuk update outStock dan inStock
+  const sql = `UPDATE inventories SET outStok = outStok + 1, 
+              inStok = stok - outStok, 
+              status = CASE 
+              WHEN (stok - outStok) = 0 
+              THEN 'disewa' ELSE 'tersedia' 
+              END WHERE id = ${inventoryId}`
+  
+  // Eksekusi query
+  db.query(sql, [inventoryId], (err, results) => {
+    if (err) {
+      console.error('Error updating inventory:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      console.log('Inventory updated successfully');
+      res.status(200).send('Inventory updated successfully');
+    }
+  });
+});
+
+//decrease outStok
+router.put('/decreaseOutStok/:id', (req, res) => {
+  const inventoryId = req.params.id;
+
+  // Query untuk update outStock dan inStock
+  const sql = `UPDATE inventories SET outStok = outStok - 1, 
+              inStok = stok - outStok, 
+              status = CASE 
+              WHEN (stok - outStok) = 0 
+              THEN 'disewa' ELSE 'tersedia' 
+              END WHERE id = ${inventoryId}`
+  
+  // Eksekusi query
+  db.query(sql, [inventoryId], (err, results) => {
+    if (err) {
+      console.error('Error updating inventory:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      console.log('Inventory updated successfully');
+      res.status(200).send('Inventory updated successfully');
+    }
+  });
+});
 module.exports = router;
