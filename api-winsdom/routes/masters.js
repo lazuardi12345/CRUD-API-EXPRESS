@@ -160,4 +160,5 @@ router.delete("/inventories/:id", (req, res) => {
   });
 });
 
+//update stok
 module.exports = router;

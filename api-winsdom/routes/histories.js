@@ -179,4 +179,35 @@ router.get("/histories-join-peminjamans", (req, res) => {
     }
   });
 });
+
+// Read item histories join peminjamans by UserId
+router.get("/histories-join-peminjamans/:userId", (req, res) => {
+  const userId = req.params.userId;
+  const sql = `SELECT histories.id, peminjamans.id as idPeminjaman, employees.userId, employees.nama_employee, inventories.nama_barang, 
+  peminjamans.tanggal_mulai_peminjaman, peminjamans.tanggal_akhir_peminjaman, 
+  histories.tanggalPengembalian, histories.kondisi, histories.catatan
+  FROM peminjamans
+  JOIN employees ON peminjamans.userId = employees.userId
+  JOIN inventories ON peminjamans.inventoryId = inventories.id
+  JOIN histories ON peminjamans.id = histories.idPeminjaman
+  WHERE employees.userId = '${userId}'`;
+  
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: "Error fetching data",
+        data: [],
+      });
+    } else {
+      res.send({
+        status: true,
+        message: "GET SUCCESS",
+        data: data,
+      });
+    }
+  });
+});
+
 module.exports = router;

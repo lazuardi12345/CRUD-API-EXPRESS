@@ -73,16 +73,13 @@ router.post("/peminjamans", (req, res) => {
   const sql = `
     INSERT INTO peminjamans (
       userId,
-      nama_employee,
       inventoryId,
-      nama_barang,
       tanggal_mulai_peminjaman,
       tanggal_akhir_peminjaman,
       verifikasiPeminjaman,
       verifikasiPengembalian
     ) VALUES (
       '${userId}',
-      '${nama_employee}',
       '${inventoryId}',
       '${tanggal_mulai_peminjaman}',
       '${tanggal_akhir_peminjaman}',

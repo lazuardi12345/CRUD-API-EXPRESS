@@ -90,11 +90,10 @@ router.post("/login", async (req, res) => {
                 expiresIn: "1h",
               }
             );
-
             res.send({
               status: true,
               message: "Login successful",
-              token: token,
+              token: token
             });
           } else {
             res.status(401).send({
@@ -114,6 +113,56 @@ router.post("/login", async (req, res) => {
       data: [],
     });
   }
+});
+
+// Middleware untuk verifikasi token JWT
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1];
+
+  if (!token) return res.status(401).send("Access Denied");
+
+  try {
+    const decoded = jwt.verify(token, "secret_key");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(400).send("Invalid Token: " + error.message);
+  }
+};
+
+//get profile
+router.get('/profile', verifyToken, (req, res) => {
+  const userId = req.user.userId;
+
+  const sql = `SELECT users.NIK, users.role, employees.id, employees.userId, 
+  employees.nama_employee, employees.alamat, employees.no_hp, employees.jenis_kelamin, employees.umur
+  FROM employees
+  INNER JOIN users ON employees.userId = users.id
+  WHERE employees.userId = '${userId}'`;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: "Error fetching data "+ err,
+        data: [],
+      });
+    } else {
+      if (data.length === 0) {
+        res.status(404).send({
+          status: false,
+          message: "Employee not found",
+          data: [],
+        });
+      } else {
+        res.send({
+          status: true,
+          message: "GET SUCCESS",
+          data: data,
+        });
+      }
+    }
+  });
 });
 
 module.exports = router;
