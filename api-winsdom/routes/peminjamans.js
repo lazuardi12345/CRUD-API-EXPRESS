@@ -63,7 +63,6 @@ router.get("/peminjamans/:id", (req, res) => {
 router.post("/peminjamans", (req, res) => {
   const {
     userId,
-    nama_employee,
     inventoryId,
     tanggal_mulai_peminjaman,
     tanggal_akhir_peminjaman,
@@ -184,11 +183,13 @@ router.delete("/peminjamans/:id", (req, res) => {
   });
 });
 
-// Read peminjamans join inventories
-router.get("/peminjamans-join-inventories/", (req, res) => {
-  const sql = `SELECT inventories.nama_barang, peminjamans.*
+// Read peminjamans join inventories join employees
+router.get("/peminjamans-join-inventories-employees/", (req, res) => {
+  const sql = `SELECT peminjamans.*, inventories.nama_barang, employees.nama_employee
               FROM peminjamans
-              INNER JOIN inventories ON peminjamans.inventoryId = inventories.id;`;
+              INNER JOIN inventories ON peminjamans.inventoryId = inventories.id
+              INNER JOIN employees ON peminjamans.userId = employees.userId
+              `;
 
   db.query(sql, (err, data) => {
     if (err) {
