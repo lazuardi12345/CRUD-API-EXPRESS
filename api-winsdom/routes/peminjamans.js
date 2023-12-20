@@ -213,6 +213,41 @@ router.get("/peminjamans-join-inventories-employees/", (req, res) => {
   });
 });
 
+// Read peminjamans join inventories join employees by userId
+router.get("/peminjamans-join-inventories-employees/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = `SELECT peminjamans.*, inventories.nama_barang, employees.nama_employee
+              FROM peminjamans
+              INNER JOIN inventories ON peminjamans.inventoryId = inventories.id
+              INNER JOIN employees ON peminjamans.userId = employees.userId
+              WHERE employees.userId = '${id}'
+              `;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        status: false,
+        message: `Error fetching data, ${err}`,
+        data: [],
+      });
+    } else {
+      if (data.length === 0) {
+        res.status(404).send({
+          status: false,
+          message: "Item not found",
+          data: [],
+        });
+      } else {
+        res.send({
+          status: true,
+          message: "GET SUCCESS",
+          data: data,
+        });
+      }
+    }
+  });
+});
+
 // Update "verifikasiPeminjaman"
 router.put("/verifikasi-peminjaman/:id", (req, res) => {
   const {
